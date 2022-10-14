@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
@@ -91,8 +90,13 @@ print()
 plt.scatter(d_le,d_he,c='red',label='Dachshund')
 plt.scatter(s_le,s_he,c='blue',marker='^',label='Samoyed')
 plt.scatter(m_le,m_he,c='green',marker='s',label='Maltese')
-plt.scatter(A[0][0],A[0][1],c = 'purple',s = 500)
-plt.scatter(B[0][0],B[0][1],c = 'gray',s = 500)
-plt.scatter(C[0][0],C[0][1],c = 'c',s = 500)
-plt.scatter(D[0][0],D[0][1],c = 'green',s = 500)
+plt.scatter(A[0][0],A[0][1],c = 'purple',s = 500,label='A')
+plt.scatter(B[0][0],B[0][1],c = 'gray',s = 500,label='B')
+plt.scatter(C[0][0],C[0][1],c = 'c',s = 500,label='C')
+plt.scatter(D[0][0],D[0][1],c = 'green',s = 500,label='D')
+
+plt.xlabel("Length")
+plt.ylabel("Height")
+plt.title("Dog size")
+plt.legend()
 plt.show()
