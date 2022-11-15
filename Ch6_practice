@@ -1,0 +1,113 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import LinearSVC
+from sklearn.preprocessing import PolynomialFeatures
+from yellowbrick.contrib.classifier import DecisionViz
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+data_loc = 'https://github.com/dknife/ML/raw/main/data/'
+df = pd.read_csv(data_loc + 'twisted_data.csv')
+
+x = df[['x1','x2']].to_numpy()
+y = df['y']
+def original_data_display():
+    df_pos = df[df['y']>0]
+    df_neg = df[df['y']==0]
+    plt.scatter(df_pos['x1'],df_pos['x2'],color = 'r')
+    plt.scatter(df_neg['x1'],df_neg['x2'],color = 'g')
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.title("original_data_display")
+    plt.show()
+
+original_data_display()
+def KNN(k,df):
+    x = df[['x1','x2']].to_numpy()
+    y = df['y']
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(x,y)
+    y_pred = knn.predict(x)
+    df_pos = df[y_pred>0]
+    df_neg = df[y_pred==0]
+    plt.scatter(df_pos['x1'],df_pos['x2'],color = 'r')
+    plt.scatter(df_neg['x1'],df_neg['x2'],color = 'g')
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.title("K = %d KNN data" %(k))
+    plt.show()
+
+KNN(5,df)
+def Simple_SVM(c,df,ls):
+    x = df[['x1','x2']].to_numpy()
+    y = df['y']
+    svm_simple = LinearSVC(C=c,loss =ls)
+    svm_simple.fit(x,y)
+    y_pred = svm_simple.predict(x)
+    df_pos = df[y_pred>0]
+    df_neg = df[y_pred==0]
+    plt.scatter(df_pos['x1'],df_pos['x2'],color = 'r')
+    plt.scatter(df_neg['x1'],df_neg['x2'],color = 'g')
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.title("C = %d loss = %s" %(c,ls))
+    plt.show()
+    viz = DecisionViz(svm_simple)
+    viz.fit(x,y)
+    viz.draw(x,y)
+
+Simple_SVM(1,df,"hinge")
+def Pokynomial_SVM():
+    x = df[['x1','x2']].to_numpy()
+    y = df['y']
+    svm_poly = Pipeline([
+        ("std",StandardScaler()),
+        ("poly_inputs",PolynomialFeatures(degree = 8)),
+        ("lsmv", LinearSVC(C=0.01,loss="hinge"))
+    ])
+    svm_poly.fit(x,y)
+    viz = DecisionViz(svm_poly)
+    viz.fit(x,y)
+    viz.draw(x,y)
+
+Pokynomial_SVM()
+def Pokynomial_Kernel():
+    x = df[['x1','x2']].to_numpy()
+    y = df['y']
+    polynomial_svm_clf = Pipeline([
+        ("scaler",StandardScaler()),
+        ("svm_clf",SVC (C=10, kernel = 'poly', degree = 4, coef0 = 2))
+    ])
+    polynomial_svm_clf.fit(x,y)
+    viz = DecisionViz(polynomial_svm_clf)
+    viz.fit(x,y)
+    viz.draw(x,y)
+
+Pokynomial_Kernel()
+def Gaussian_RBF_Kernel():
+    x = df[['x1','x2']].to_numpy()
+    y = df['y']
+    gaussian_RBF_svm = Pipeline([
+        ("scaler",StandardScaler()),
+        ("svm_clf",SVC (C=10, kernel = 'rbf', degree = 4, coef0 = 2))
+    ])
+    gaussian_RBF_svm.fit(x,y)
+    viz = DecisionViz(gaussian_RBF_svm)
+    viz.fit(x,y)
+    viz.draw(x,y)
+
+Gaussian_RBF_Kernel()def Sigmoid_Kernel():
+    x = df[['x1','x2']].to_numpy()
+    y = df['y']
+    sigmoid_svm = Pipeline([
+        ("scaler",StandardScaler()),
+        ("svm_clf",SVC (C=5, kernel = 'sigmoid', degree = 10, coef0 = 2))
+    ])
+    sigmoid_svm.fit(x,y)
+    viz = DecisionViz(sigmoid_svm)
+    viz.fit(x,y)
+    viz.draw(x,y)
+
+Sigmoid_Kernel()
