@@ -1,0 +1,47 @@
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
+
+iris = load_iris()
+X,y = iris.data,iris.target
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = 0.3)
+print("훈련용 데이터의 형태: ",X_train.shape)
+print("훈련용 데이터의 레이블 형태",y_train.shape)
+print("테스트용 데이터의 형태:",X_test.shape)
+print("테스트용 데이터의 레이블 형태",y_test.shape)
+print("개별 훈련 데이터의 형태",X_train[0].shape)
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape =(4,)),
+    keras.layers.Dense(64,activation = 'relu'),
+    keras.layers.Dense(10,activation = 'softmax'),
+])
+
+model.compile(optimizer = 'adam',loss = 'sparse_categorical_crossentropy',metrics = ['accuracy'])
+history=model.fit(X_train,y_train,batch_size=5,epochs = 30)
+plt.plot(history.history['loss'], 'b-',label = 'loss value')
+plt.legend()
+plt.plot(history.history['accuracy'], 'r-',label = 'accuracy')
+plt.legend(loc= 'lower right')
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape =(4,)),
+    keras.layers.Dropout(0.3),
+    keras.layers.Dense(64,activation = 'relu'),
+    keras.layers.Dense(10,activation = 'softmax'),
+])
+
+model.compile(optimizer = 'adam',loss = 'sparse_categorical_crossentropy',metrics = ['accuracy'])
+history=model.fit(X_train,y_train,batch_size=5,epochs = 30)
+
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape =(4,)),
+    keras.layers.Dense(64,activation = 'relu'),
+    keras.layers.Dense(64,activation = 'relu'),
+    keras.layers.Dense(64,activation = 'relu'),
+    keras.layers.Dense(3,activation = 'softmax'),
+])
+
+model.compile(optimizer = 'adam',loss = 'sparse_categorical_crossentropy',metrics = ['accuracy'])
+history=model.fit(X_train,y_train,batch_size=5,epochs = 30)
